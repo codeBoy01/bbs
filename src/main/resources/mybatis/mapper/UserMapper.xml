@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个对应的 Dao/Mapper 接口-->
+<mapper namespace="com.wang.dao.UserMapper">
+    <insert id="addUser" parameterType="com.wang.pojo.User" useGeneratedKeys="true" keyProperty="id" >
+        insert into User(id,name, password,timeCreate, timeUpdate)
+        values(#{id}, #{name}, #{password},#{timeCreate}, #{timeUpdate})
+    </insert >
+    <select id="selectUser" resultType="com.wang.pojo.User">
+        select * from user where name=#{name}
+    </select>
+    <update id="updateUserImage" parameterType="hashmap">
+        update user set thumb=#{url} where id=#{id}
+    </update>
+</mapper>

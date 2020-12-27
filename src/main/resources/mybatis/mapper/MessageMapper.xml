@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace=绑定一个对应的 Dao/Mapper 接口-->
+<mapper namespace="com.wang.dao.MessageMapper">
+
+
+<!--<resultMap id="delMessageMap" type="com.wang.pojo.Message">-->
+<!--<id column="id" property="id"/>-->
+    <!--<result column="ref1" property="ref1"/>-->
+    <!--<result column="storePath" property="storePath"/>-->
+<!--</resultMap>-->
+
+<insert id="insertMessage" parameterType="com.wang.pojo.Message"
+        useGeneratedKeys="true"
+        keyProperty="id" >
+
+insert into Message(id,creator,title,content,cat1,cat2,cat3,ref1,ref2,refstr,timeCreate,timeUpdate,niceFlag,topFlag,banFlag,delFlag,closeFlag,numReply,numLike,storePath,imgCount,img1,img2,img3,replyUser,replyName,replyTime,replyText)
+values(#{id},#{creator},#{title},#{content},#{cat1},#{cat2},#{cat3},#{ref1},#{ref2},#{refstr},#{timeCreate},#{timeUpdate},#{niceFlag},#{topFlag},#{banFlag},#{delFlag},#{closeFlag},#{numReply},#{numLike},#{storePath},#{imgCount},#{img1},#{img2},#{img3},#{replyUser},#{replyName},#{replyTime},#{replyText})
+</insert >
+<select id="selectMessage" parameterType="java.lang.Long" resultType="com.wang.pojo.Message">
+select * from message where id=#{msgId}
+</select>
+<select id="selectMessageNum" parameterType="map" resultType="java.lang.Integer">
+select count(id) from message where ref1=#{ref1} and delFlag=#{delFlag}
+</select>
+<select id="selectMessageList" parameterType="map" resultType="hashmap">
+SELECT a.* ,b.name AS userName,b.vipName,b.thumb  FROM message a JOIN USER b  ON a.creator = b.id WHERE ref1=#{ref1} and delFlag=#{delFlag} ORDER BY topFlag DESC, replyTime DESC  LIMIT #{startIndex},#{pageSize}
+</select>
+ <update id="updateMessage" parameterType="hashmap">
+        update message set numReply=numReply+1,replyUser=#{replyUser},replyText=#{replyText},replyName=#{replyName},replyTime=#{replyTime}  where id=#{id}
+</update>
+    <select id="selectMessageMap" parameterType="int" resultType="hashmap">
+        select a.*, b.name as userName,b.vipName,b.thumb from message a, user b  where a.creator=b.id and a.id=#{msgId}
+    </select>
+    <select id="selectMessageReplyList" parameterType="hashmap" resultType="hashmap">
+        SELECT a.* ,b.name AS userName,b.vipName,b.thumb  FROM message a JOIN USER b  ON a.creator = b.id WHERE ref1=#{ref1} and delFlag=#{delFlag}  ORDER BY id ASC  LIMIT #{startIndex},#{pageSize}
+    </select>
+    <update id="delMessage" parameterType="java.lang.Long">
+        update message set delFlag=1 WHERE id=#{msgId} OR ref1=#{msgId}
+    </update>
+    <select id="queryMessageDel" resultType="com.wang.pojo.Message">
+          select * from message where delFlag=1 LIMIT 5000
+    </select>
+    <delete id="delMessage2" parameterType="java.lang.Long">
+        delete from message where id=#{msg.id}
+    </delete>
+
+</mapper>
